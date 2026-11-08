@@ -1,6 +1,6 @@
 # 🐳 Docker Ubuntu Setup (Full Production)
 
-[![Lint Shell Scripts & YAML](https://github.com)](https://github.com)
+[![Lint Shell Scripts & YAML](https://github.com/wellingt0n-0liveira/docker-ubuntu-setup/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/wellingt0n-0liveira/docker-ubuntu-setup/actions/workflows/lint.yml)
 
 Script automatizado e idempotente para instalação e configuração profissional do **Docker Engine** e **Docker Compose** em servidores Ubuntu, aplicando boas práticas de segurança, rede e manutenção.
 
@@ -10,13 +10,13 @@ Escolha o comando correspondente ao seu usuário atual no servidor para baixar, 
 
 * **Usuário Comum (com privilégios `sudo`):**
   ```bash
-  curl -fsSL https://githubusercontent.com | sudo bash
+   curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/install_docker.sh | sudo bash
   ```
   > *Nota: Caso seu usuário exija senha para comandos `sudo`, ela será solicitada apenas uma vez no início da execução.*
 
 * **Usuário `root` (direto no terminal administrativo):**
   ```bash
-  curl -fsSL https://githubusercontent.com | bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/install_docker.sh | bash
   ```
 
 ---
@@ -50,12 +50,12 @@ Para validar se o Docker Compose, o isolamento de rede (`172.28.0.0/16`) e os li
 
 * **Usuário Comum (sem precisar relogar ou digitar `sudo`):**
   ```bash
-  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://githubusercontent.com && sg docker -c "docker compose up -d && sleep 3 && docker ps --filter 'name=app-web-teste'"
+  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml && sg docker -c "docker compose up -d && sleep 3 && docker ps --filter 'name=app-web-teste'"
   ```
 
 * **Usuário `root`:**
   ```bash
-  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://githubusercontent.com && docker compose up -d && sleep 3 && docker ps --filter "name=app-web-teste"
+  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml && docker compose up -d && sleep 3 && docker ps --filter "name=app-web-teste"
   ```
 
 * **Características do contêiner de teste:** Utiliza a imagem `busybox:1.36-musl` (< 2 MB), roda com sistema de arquivos somente leitura (`read_only: true`), sem privilégios de kernel (`cap_drop: ALL`) e teto máximo de **32 MB de RAM**.
@@ -66,12 +66,12 @@ Para encerrar e remover completamente o contêiner, a rede e a pasta temporária
 
 * **Usuário Comum:**
   ```bash
-  sg docker -c "docker compose down" && cd ~ && rm -rf ~/teste-docker
+  cd ~/teste-docker && sg docker -c "docker compose down" && cd ~ && rm -rf ~/teste-docker
   ```
 
 * **Usuário `root`:**
   ```bash
-  docker compose down && cd ~ && rm -rf ~/teste-docker
+  cd ~/teste-docker && docker compose down && cd ~ && rm -rf ~/teste-docker
   ```
 
 ---
@@ -84,12 +84,12 @@ Caso precise remover completamente o Docker, suas configurações, repositórios
 
 * **Usuário Comum (com privilégios `sudo`):**
   ```bash
-  curl -fsSL https://githubusercontent.com | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/uninstall_docker.sh | sudo bash
   ```
 
 * **Usuário `root` (direto no terminal administrativo):**
   ```bash
-  curl -fsSL https://githubusercontent.com | bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/uninstall_docker.sh | bash
   ```
 
 ### O que o script de desinstalação remove
