@@ -51,3 +51,37 @@ Para encerrar e remover completamente o ambiente de teste:
 ```bash
 docker compose down && cd ~ && rm -rf ~/teste-docker
 ```
+
+
+# 🧹 Desinstalação Completa do Docker (Clean Uninstall)
+
+Script automatizado para **remover completamente o Docker Engine**, suas configurações, repositórios, agendamentos e todos os dados armazenados no servidor Ubuntu.
+
+> ⚠️ **AVISO CRÍTICO DE PERDA DE DADOS:** A execução deste script é **irreversível**. Ele apagará permanentemente todos os contêineres, imagens, redes personalizadas e **volumes de dados** (incluindo bancos de dados). Faça backup antes de continuar.
+
+---
+
+## 🚀 Execução Rápida (Linha Única)
+
+Escolha o comando correspondente ao seu nível de acesso no servidor:
+
+* **Usuário Comum (com privilégios `sudo`):**
+  ```bash
+  curl -fsSL https://githubusercontent.com | sudo bash
+  ```
+
+* **Usuário `root` (direto no terminal administrativo):**
+  ```bash
+  curl -fsSL https://githubusercontent.com | bash
+  ```
+
+---
+
+## ⚙️ O que este script remove do sistema
+
+1. **Interrupção de Serviços:** Para todos os contêineres em execução e desativa os serviços `docker.service`, `docker.socket` e `containerd.service`.
+2. **Remoção Total de Pacotes (`purge`):** Desinstala e limpa configurações de `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-buildx-plugin`, `docker-compose-plugin` e pacotes legados.
+3. **Exclusão de Dados e Volumes:** Remove definitivamente os diretórios `/var/lib/docker` e `/var/lib/containerd`.
+4. **Limpeza de Configurações e Hardening:** Apaga o arquivo `/etc/docker/daemon.json` e o diretório `/etc/docker`.
+5. **Remoção de Repositórios e Chaves:** Exclui `/etc/apt/sources.list.d/docker.sources`, `/etc/apt/keyrings/docker.asc` e atualiza o cache do `apt`.
+6. **Manutenção e Permissões:** Remove o agendamento semanal `/etc/cron.d/docker-cleanup`, o log `/var/log/docker-cleanup.log` e o grupo de sistema `docker`.
