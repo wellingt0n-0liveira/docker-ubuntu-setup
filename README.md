@@ -34,3 +34,20 @@ curl -fsSL https://githubusercontent.com | sudo bash && newgrp docker
 * Ubuntu (20.04 LTS, 22.04 LTS, 24.04 LTS ou superior)
 * Acesso à internet e privilégios de `sudo`
 * Pacote `curl` instalado
+
+
+## 🧪 Teste Automatizado do Ambiente (Low-Resource / Raspberry Pi)
+
+Para validar se o Docker Compose, o isolamento de rede (`172.28.0.0/16`) e os limites de recursos estão operando corretamente — mesmo em máquinas limitadas como um **Raspberry Pi** — execute o comando abaixo:
+
+```bash
+mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://githubusercontent.com && docker compose up -d && sleep 3 && docker ps --filter "name=app-web-teste"
+```
+
+* **Características do contêiner de teste:** Utiliza a imagem `busybox:1.36-musl` (< 2 MB), roda com sistema de arquivos somente leitura (`read_only: true`), sem privilégios de kernel (`cap_drop: ALL`) e teto máximo de **32 MB de RAM**.
+
+Para encerrar e remover completamente o ambiente de teste:
+
+```bash
+docker compose down && cd ~ && rm -rf ~/teste-docker
+```
