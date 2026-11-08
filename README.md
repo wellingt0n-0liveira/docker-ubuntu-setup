@@ -1,5 +1,7 @@
 # 🐳 Docker Ubuntu Setup (Full Production)
 
+[![Lint Shell Scripts & YAML](https://github.com)](https://github.com)
+
 Script automatizado e idempotente para instalação e configuração profissional do **Docker Engine** e **Docker Compose** em servidores Ubuntu, aplicando boas práticas de segurança, rede e manutenção.
 
 ## 🚀 Instalação Rápida (Linha Única)
