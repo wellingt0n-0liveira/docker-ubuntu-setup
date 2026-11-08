@@ -189,13 +189,13 @@ curl -fsSL \
 
 ## 🔄 CI/CD
 
-O repositório usa GitHub Actions (.github/workflows/lint.yml) para executar verificações automatizadas. O workflow utiliza:
+O repositório usa GitHub Actions (`.github/workflows/lint.yml`) para executar verificações automatizadas. O workflow utiliza:
 
 •ShellCheck: análise estática dos scripts shell para identificar erros comuns e problemas de portabilidade.
 
-•Docker Compose config: executa docker compose -f docker-compose.yml config --quiet para verificar se a configuração do Compose pode ser carregada corretamente. Esse comando não é um YAML Lint genérico; ele valida o arquivo conforme as regras do Docker Compose.
+•Docker Compose config: executa `docker compose -f docker-compose.yml config --quiet` para verificar se a configuração do Compose pode ser carregada corretamente. Esse comando não é um YAML Lint genérico; ele valida o arquivo conforme as regras do Docker Compose.
 
-Consulte .github/workflows/lint.yml para confirmar os eventos que acionam as verificações e os comandos configurados atualmente.
+Consulte `.github/workflows/lint.yml` para confirmar os eventos que acionam as verificações e os comandos configurados atualmente.
 
 
 
