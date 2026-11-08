@@ -82,12 +82,12 @@ Caso precise remover completamente o Docker, suas configurações, repositórios
 
 * **Usuário Comum (com privilégios `sudo`):**
   ```bash
-  curl -fsSL https://githubusercontent.com | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/uninstall_docker.sh | sudo bash
   ```
 
 * **Usuário `root` (direto no terminal administrativo):**
   ```bash
-  curl -fsSL https://githubusercontent.com | bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/uninstall_docker.sh | bash
   ```
 
 ### O que o script de desinstalação remove
