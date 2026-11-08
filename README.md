@@ -4,13 +4,18 @@ Script automatizado e idempotente para instalação e configuração profissiona
 
 ## 🚀 Instalação Rápida (Linha Única)
 
-Execute o comando abaixo no terminal do seu servidor Ubuntu para baixar, instalar, configurar e validar todo o ambiente automaticamente sem intervenção:
+Escolha o comando correspondente ao seu usuário atual no servidor para baixar, instalar, configurar e validar todo o ambiente automaticamente sem intervenção:
 
-```bash
-curl -fsSL https://githubusercontent.com | sudo bash && newgrp docker
-```
+* **Usuário Comum (com privilégios `sudo`):**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/install_docker.sh | sudo bash
+  ```
+  > *Nota: Caso seu usuário exija senha para comandos `sudo`, ela será solicitada apenas uma vez no início da execução.*
 
-> **Nota:** Caso seu usuário exija senha para comandos `sudo`, ela será solicitada apenas uma vez no início da execução.
+* **Usuário `root` (direto no terminal administrativo):**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/install_docker.sh | bash
+  ```
 
 ---
 
@@ -32,38 +37,48 @@ curl -fsSL https://githubusercontent.com | sudo bash && newgrp docker
 ## 📋 Requisitos
 
 * Ubuntu (20.04 LTS, 22.04 LTS, 24.04 LTS ou superior)
-* Acesso à internet e privilégios de `sudo`
+* Acesso à internet e privilégios de `sudo` ou `root`
 * Pacote `curl` instalado
 
+---
 
 ## 🧪 Teste Automatizado do Ambiente (Low-Resource / Raspberry Pi)
 
 Para validar se o Docker Compose, o isolamento de rede (`172.28.0.0/16`) e os limites de recursos estão operando corretamente — mesmo em máquinas limitadas como um **Raspberry Pi** — execute o comando abaixo:
 
-```bash
-mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://githubusercontent.com && docker compose up -d && sleep 3 && docker ps --filter "name=app-web-teste"
-```
+* **Usuário Comum (sem precisar relogar ou digitar `sudo`):**
+  ```bash
+  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml && sg docker -c "docker compose up -d && sleep 3 && docker ps --filter 'name=app-web-teste'"
+  ```
+
+* **Usuário `root`:**
+  ```bash
+  mkdir -p ~/teste-docker && cd ~/teste-docker && curl -fsSLO https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml && docker compose up -d && sleep 3 && docker ps --filter "name=app-web-teste"
+  ```
 
 * **Características do contêiner de teste:** Utiliza a imagem `busybox:1.36-musl` (< 2 MB), roda com sistema de arquivos somente leitura (`read_only: true`), sem privilégios de kernel (`cap_drop: ALL`) e teto máximo de **32 MB de RAM**.
 
-Para encerrar e remover completamente o ambiente de teste:
+### 🧹 Limpar o Ambiente de Teste
 
-```bash
-docker compose down && cd ~ && rm -rf ~/teste-docker
-```
+Para encerrar e remover completamente o contêiner, a rede e a pasta temporária após validar:
 
+* **Usuário Comum:**
+  ```bash
+  sg docker -c "docker compose down" && cd ~ && rm -rf ~/teste-docker
+  ```
 
-# 🧹 Desinstalação Completa do Docker (Clean Uninstall)
-
-Script automatizado para **remover completamente o Docker Engine**, suas configurações, repositórios, agendamentos e todos os dados armazenados no servidor Ubuntu.
-
-> ⚠️ **AVISO CRÍTICO DE PERDA DE DADOS:** A execução deste script é **irreversível**. Ele apagará permanentemente todos os contêineres, imagens, redes personalizadas e **volumes de dados** (incluindo bancos de dados). Faça backup antes de continuar.
+* **Usuário `root`:**
+  ```bash
+  docker compose down && cd ~ && rm -rf ~/teste-docker
+  ```
 
 ---
 
-## 🚀 Execução Rápida (Linha Única)
+## 🧹 Desinstalação Completa (Clean Uninstall)
 
-Escolha o comando correspondente ao seu nível de acesso no servidor:
+Caso precise remover completamente o Docker, suas configurações, repositórios e todos os dados armazenados no servidor, execute o script `uninstall_docker.sh`.
+
+> ⚠️ **AVISO CRÍTICO DE PERDA DE DADOS:** A execução abaixo é **irreversível** e apagará permanentemente todos os contêineres, imagens, redes personalizadas e **volumes de dados** (`/var/lib/docker`). Faça backup antes de prosseguir.
 
 * **Usuário Comum (com privilégios `sudo`):**
   ```bash
@@ -75,13 +90,9 @@ Escolha o comando correspondente ao seu nível de acesso no servidor:
   curl -fsSL https://githubusercontent.com | bash
   ```
 
----
-
-## ⚙️ O que este script remove do sistema
-
-1. **Interrupção de Serviços:** Para todos os contêineres em execução e desativa os serviços `docker.service`, `docker.socket` e `containerd.service`.
-2. **Remoção Total de Pacotes (`purge`):** Desinstala e limpa configurações de `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-buildx-plugin`, `docker-compose-plugin` e pacotes legados.
-3. **Exclusão de Dados e Volumes:** Remove definitivamente os diretórios `/var/lib/docker` e `/var/lib/containerd`.
-4. **Limpeza de Configurações e Hardening:** Apaga o arquivo `/etc/docker/daemon.json` e o diretório `/etc/docker`.
-5. **Remoção de Repositórios e Chaves:** Exclui `/etc/apt/sources.list.d/docker.sources`, `/etc/apt/keyrings/docker.asc` e atualiza o cache do `apt`.
-6. **Manutenção e Permissões:** Remove o agendamento semanal `/etc/cron.d/docker-cleanup`, o log `/var/log/docker-cleanup.log` e o grupo de sistema `docker`.
+### O que o script de desinstalação remove
+1. **Serviços:** Para e desativa `docker.service`, `docker.socket` e `containerd.service`.
+2. **Pacotes (`purge`):** Remove `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-buildx-plugin`, `docker-compose-plugin` e dependências órfãs.
+3. **Dados e Volumes:** Exclui permanentemente `/var/lib/docker`, `/var/lib/containerd` e `/var/run/docker.sock`.
+4. **Configurações e Repositórios:** Apaga `/etc/docker`, `/etc/apt/sources.list.d/docker.sources` e `/etc/apt/keyrings/docker.asc`.
+5. **Manutenção e Permissões:** Remove o agendamento `/etc/cron.d/docker-cleanup`, os logs de limpeza e o grupo `docker`.
