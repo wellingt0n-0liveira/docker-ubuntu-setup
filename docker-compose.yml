@@ -3,13 +3,12 @@ services:
     image: busybox:1.36-musl
     container_name: app-web-teste
     restart: unless-stopped
-    # Inicia um servidor HTTP nativo ultraleve (~1MB de RAM)
-    command: httpd -f -p 8080 -h /tmp
+    # Cria um index.html mínimo e sobe o httpd em foreground
+    command: sh -c "echo 'OK' > /tmp/index.html && httpd -f -p 8080 -h /tmp"
     ports:
       - "8080:8080"
     networks:
       - app_network
-    # Hardening de Segurança
     read_only: true
     security_opt:
       - no-new-privileges:true
@@ -17,14 +16,14 @@ services:
       - ALL
     tmpfs:
       - /tmp:size=4M,noexec,nosuid
-    # Limites rigorosos para Raspberry Pi / Low-end VPS
     deploy:
       resources:
         limits:
           cpus: "0.25"
           memory: 32M
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      # -Y off ignora HTTP_PROXY/HTTPS_PROXY no loopback
+      test: ["CMD", "wget", "-q", "-Y", "off", "--spider", "http://127.0.0.1:8080/"]
       interval: 15s
       timeout: 3s
       retries: 2
