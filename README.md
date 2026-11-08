@@ -119,7 +119,7 @@ mkdir -p ~/teste-docker \
   && sg docker -c \
     "docker compose up -d \
       && sleep 3 \
-      && docker ps --filter 'name=app-web-teste'"
+      && docker ps --filter 'name=app-web-teste'
 ```
 
 ### Usuário `root`
