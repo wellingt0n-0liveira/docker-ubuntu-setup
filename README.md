@@ -118,7 +118,7 @@ mkdir -p ~/teste-docker \
     https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml \
   && sg docker -c \
     "docker compose up -d \
-      && sleep 3 \
+      && sleep 5 \
       && docker ps --filter 'name=app-web-teste'
 ```
 
@@ -130,10 +130,21 @@ mkdir -p ~/teste-docker \
   && curl -fsSLO \
     https://raw.githubusercontent.com/wellingt0n-0liveira/docker-ubuntu-setup/refs/heads/main/docker-compose.yml \
   && docker compose up -d \
-  && sleep 3 \
+  && sleep 5 \
   && docker ps --filter 'name=app-web-teste'
 ```
+🧪 Como validar antes de recriar o container
+Execute os comandos abaixo para confirmar que o wget funciona dentro do container e ver o código de resposta HTTP:
 
+```bash
+# 1. Testa o healthcheck manualmente (deve retornar 0)
+docker exec app-web-teste wget -q -Y off --spider http://127.0.0.1:8080/; echo "exit: $?"
+```
+```bash
+# 2. Mostra o status HTTP retornado pelo httpd
+docker exec app-web-teste wget -S -q -Y off -O /dev/null http://127.0.0.1:8080/ 2>&1 | head -5
+Se o passo 1 retornar exit: 0, o healthcheck está corrigido. Se retornar algo diferente de 0, o passo 2 mostrará se o httpd está devolvendo 404, 403 ou outro código.
+```
 ## 🧹 Limpar o ambiente de teste
 
 Os comandos abaixo removem o contêiner e a rede do Compose e excluem a pasta temporária `~/teste-docker`. Confira o caminho antes de executá-los.
